@@ -1,0 +1,9 @@
+<div>
+    <div *ngFor="let wordType of wordTypes">
+      <h2>{{ wordType }}</h2>
+      <ul>
+        <li *ngFor="let word of getWordsByType(wordType)" (click)="addToSentence(word)">{{ word }}</li>
+      </ul>
+    </div>
+  </div>
+  

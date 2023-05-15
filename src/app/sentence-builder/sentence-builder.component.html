@@ -1,0 +1,51 @@
+<div class="sentence-builder">
+    <h2>Sentence Creator</h2>
+
+    <div class="container">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="wordType">Word Type:</label>
+                <select id="wordType" [(ngModel)]="selectedType" (change)="onSelectType()">
+                    <option value="">-- Select a word type --</option>
+                    <option *ngFor="let wordType of wordTypes" [value]="wordType">{{ wordType }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="selectedWord">Word:</label>
+                <select id="selectedWord" [(ngModel)]="selectedWord">
+                    <option disabled selected value="">-- Select a word --</option>
+                    <option *ngFor="let word of selectedWords" [value]="word">{{ word }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button (click)="addToSentence(selectedWord)">Add Word</button>
+        </div>
+    </div>
+
+    <div class="generated-sentence-container">
+        <div class="sentence">
+            <h3>Created Sentence:</h3>
+            <input id="sentenceTextField" [(ngModel)]="sentence" [ngStyle]="{ 'width': getWidth() }" type="text"
+                readonly>
+        </div>
+
+        <div class="clear-save-container">
+            <button (click)="clearSentence()">Clear Sentence</button>
+            <button (click)="saveSentence()">Save Sentence</button>
+        </div>
+    </div>
+
+    <div class="import-section">
+        <div class="import-container">
+            <h3>Saved Sentences:</h3>
+            <textarea [(ngModel)]="importedSentences" readonly></textarea>
+            <div class="button-group">
+                <button (click)="importData()">Display</button>
+                <button class="clear-button" (click)="clearTextarea()">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
