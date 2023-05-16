@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SentenceBuilderService } from '../sentence-builder.service';
 
 interface WordType {
   ID: number;
@@ -20,66 +21,51 @@ export class SentenceBuilderComponent implements OnInit {
   extraChars: number = 0;
   importedSentences: string = '';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private sentenceBuilderService: SentenceBuilderService) {
     this.selectedType = null; // Set selectedType to null in the constructor
   }
 
   ngOnInit() {
     this.fetchWordTypes();
   }
-
+  //Used to call service hit api to return word types
   fetchWordTypes() {
-    this.http.get<WordType[]>('http://192.168.10.154:3000/api/word-types')
+    this.sentenceBuilderService.fetchWordTypes()
       .subscribe(
         (data) => {
           this.wordTypes = data;
           this.selectedType = null; // Set selectedType to null
         },
         (error) => {
-          console.error('Error fetching word types:', error);
+          alert('Unsuccessful due to an internal error or power outage');
         }
       );
   }
   
-
-  onSelectType() {
-    if (this.selectedType && this.selectedType.ID !== 0) {
-      this.fetchWordOptions();
-    } else {
-      this.selectedWords = [];
-    }
-  }
-
-  fetchWordOptions() {
-    if (this.selectedType) {
-      this.http.get<any[]>(`http://192.168.10.154:3000/api/words/${this.selectedType}`)
+  
+  //Used to call service to hit api to retrive words based on word type, this executes when the dropdownlist to select a word is selected
+  onSelectType(event: any) {
+    this.selectedType = event.target.value;
+   // alert("Selected word type:" + this.selectedType);
+    this.sentenceBuilderService.fetchWordOptions(event.target.value)
         .subscribe(
           (data) => {
             this.selectedWords = data;
           },
           (error) => {
-            console.error('Error fetching word options:', error);
+            alert('Unsuccessful due to an internal error or power outage');
           }
         );
-    } else {
-      this.selectedWords = [];
-    }
   }
-
+  
+  //used to add the selected word to previously selected word via the add button
   addToSentence(word: string) {
     if (word) {
       this.sentence += word + ' ';
       this.selectedWord = '';
 
-      const sentenceLength = this.sentence.replace(/\s/g, '').length;
-      this.extraChars = sentenceLength - 27;
-
-      const textField = document.getElementById('sentenceTextField') as HTMLInputElement;
-      if (textField) {
-        textField.style.setProperty('--extra-chars', this.extraChars.toString());
-      }
-    }
-  }
+      
+  }}
 
   clearSentence() {
     this.sentence = '';
@@ -100,31 +86,34 @@ export class SentenceBuilderComponent implements OnInit {
   }
 
   saveSentence() {
-  // Send the sentence to your API
-  this.http.post('http://192.168.10.154:3000/api/sentence', { sentence: this.sentence })
-    .subscribe(
-      (response) => {
-        console.log('Sentence saved successfully:', response);
-        // Handle success behavior, such as displaying a success message
-      },
-      (error) => {
-        console.error('Failed to save sentence:', error);
-        // Handle error behavior, such as displaying an error message
-      }
-    );
-}
+    this.sentenceBuilderService.saveSentence(this.sentence)
+      .subscribe(
+        (response) => {
+          alert('Added successfully');
+          // Handle success behavior, such as displaying a success message
+        },
+        (error) => {
+          alert('Failed to save sentence due to an internal error or power outage');
+          // Handle error behavior, such as displaying an error message
+        }
+      );
+  }
+  
 
-importData() {
-  this.http.get<string[]>('http://192.168.10.154:3000/api/getAllSentences')
-    .subscribe(
-      (sentences) => {
-        this.importedSentences = sentences.join('\n');
-      },
-      (error) => {
-        console.error('Error fetching sentences:', error);
-      }
-    );}
-    clearTextarea() {
-      this.importedSentences = ''; // Clear the textarea by setting its value to an empty string
-    }
+  importData() {
+    this.sentenceBuilderService.getImportedSentences()
+      .subscribe(
+        (sentences) => {
+          this.importedSentences = sentences.join('\n');
+        },
+        (error) => {
+          alert('Failed to display sentences due to an internal error or power outage');
+        }
+      );
+  }
+
+  clearTextarea() {
+    this.importedSentences = ''; // Clear the textarea by setting its value to an empty string
+  }
+  
 }

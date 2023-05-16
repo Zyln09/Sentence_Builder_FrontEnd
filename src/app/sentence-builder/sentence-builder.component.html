@@ -5,10 +5,11 @@
         <div class="form-section">
             <div class="form-group">
                 <label for="wordType">Word Type:</label>
-                <select id="wordType" [(ngModel)]="selectedType" (change)="onSelectType()">
+                <select id="wordType" (change)="onSelectType($event)">
                     <option value="">-- Select a word type --</option>
                     <option *ngFor="let wordType of wordTypes" [value]="wordType">{{ wordType }}</option>
-                </select>
+                  </select>
+                  
             </div>
 
             <div class="form-group">

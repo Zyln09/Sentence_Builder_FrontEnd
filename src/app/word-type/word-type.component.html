@@ -1,8 +1,0 @@
-<div>
-    <label for="wordType">Select Word Type:</label>
-    <select id="wordType" (change)="onSelectType($event.target)">
-      <option disabled selected value>Select a word type</option>
-      <option *ngFor="let wordType of wordTypes1" [value]="wordType">{{ wordType }}</option>
-    </select>
-  </div>
-  
