@@ -66,7 +66,7 @@ export class SentenceBuilderComponent implements OnInit {
 
       
   }}
-
+  //used to clear the texfield for the created sentence
   clearSentence() {
     this.sentence = '';
     this.extraChars = 0;
@@ -74,7 +74,7 @@ export class SentenceBuilderComponent implements OnInit {
     this.selectedWords = [];
     this.selectedType = null;
   }
-
+//dynamically adjusts width of text filed used to display created sentence
   getWidth(): string {
     if (this.sentence.length < 36) {
       return '200px';
@@ -84,7 +84,7 @@ export class SentenceBuilderComponent implements OnInit {
       return '600px';
     }
   }
-
+//Used to call service to save created sentence by hitting API
   saveSentence() {
     this.sentenceBuilderService.saveSentence(this.sentence)
       .subscribe(
@@ -99,7 +99,7 @@ export class SentenceBuilderComponent implements OnInit {
       );
   }
   
-
+//used to import all saved sentences via the API which is handled by a service
   importData() {
     this.sentenceBuilderService.getImportedSentences()
       .subscribe(
@@ -111,7 +111,7 @@ export class SentenceBuilderComponent implements OnInit {
         }
       );
   }
-
+//clears text area where saved sentences are displayed
   clearTextarea() {
     this.importedSentences = ''; // Clear the textarea by setting its value to an empty string
   }
